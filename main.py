@@ -7,6 +7,7 @@ from langchain_huggingface import HuggingFaceEndpoint
 import streamlit as st
 import subprocess
 
+os.environ["FFMPEG_BINARY"] = "/usr/bin/ffmpeg"
 try:
     # Run the installation script
     result = subprocess.run(['./install.sh'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
