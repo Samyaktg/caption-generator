@@ -11,3 +11,4 @@ langchain
 langchain_huggingface
 huggingface-hub
 ffmpeg-python
+audioread

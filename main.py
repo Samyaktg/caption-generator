@@ -5,7 +5,6 @@ from transformers import pipeline
 from moviepy.editor import VideoFileClip
 from langchain_huggingface import HuggingFaceEndpoint
 import streamlit as st
-import subprocess
 from pydub import AudioSegment
 
 # Set Hugging Face API Token
@@ -33,7 +32,7 @@ if st.button("Start Processing"):
         st.write("Processing video...")
         
         # Using AudioSegment to extract audio
-        audio = AudioSegment.from_file("uploaded_video.mp4")
+        audio = AudioSegment.from_file("uploaded_video.mp4", format="mp4")
         audio.export("extracted_audio.mp3", format="mp3")
         st.write("Audio extracted.")
 
