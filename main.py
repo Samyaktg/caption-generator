@@ -6,6 +6,18 @@ from moviepy.editor import VideoFileClip
 from langchain_huggingface import HuggingFaceEndpoint
 import streamlit as st
 from pydub import AudioSegment
+import subprocess
+
+def install_ffmpeg():
+    try:
+        subprocess.run(['ffmpeg', '-version'], check=True)
+    except subprocess.CalledProcessError:
+        # Install ffmpeg from a repository like apt-get
+        subprocess.run(['apt-get', 'update'])
+        subprocess.run(['apt-get', 'install', '-y', 'ffmpeg'])
+
+# Call the function to install ffmpeg
+install_ffmpeg()
 
 # Set Hugging Face API Token
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = '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'
