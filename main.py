@@ -11,13 +11,9 @@ try:
     # Run the installation script
     result = subprocess.run(['./install.sh'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    # Display the output and success message
-    st.success("Dependencies installed successfully!")
-    st.text(result.stdout.decode())
+    
 except subprocess.CalledProcessError as e:
-    # Display the error message if the script fails
-    st.error("An error occurred during installation:")
-    st.text(e.stderr.decode())
+    print("welp")
 
 # Set Hugging Face API Token
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = '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'
@@ -47,24 +43,24 @@ if st.button("Start Processing"):
         audio.write_audiofile("extracted_audio.mp3")
         st.write("Audio extracted.")
 
-        # # Step 3: Chunking audio if it's too large
-        # st.write("Chunking audio into smaller parts...")
-        # input_file = 'extracted_audio.mp3'
+        # Step 3: Chunking audio if it's too large
+        st.write("Chunking audio into smaller parts...")
+        input_file = 'extracted_audio.mp3'
 
-        # # Stream over 30 seconds chunks rather than load the full file
-        # stream = librosa.stream(
-        #     input_file,
-        #     block_length=30,
-        #     frame_length=16000,
-        #     hop_length=16000
-        # )
+        # Stream over 30 seconds chunks rather than load the full file
+        stream = librosa.stream(
+            input_file,
+            block_length=30,
+            frame_length=16000,
+            hop_length=16000
+        )
 
-        # # Save the chunks as separate audio files
-        # for i, speech in enumerate(stream):
-        #     sf.write(f'{i}.wav', speech, 44100)
+        # Save the chunks as separate audio files
+        for i, speech in enumerate(stream):
+            sf.write(f'{i}.wav', speech, 44100)
 
-        # total_chunks = i + 1
-        # st.write(f"Audio chunked into {total_chunks} parts.")
+        total_chunks = i + 1
+        st.write(f"Audio chunked into {total_chunks} parts.")
 
         # Step 4: Use Hugging Face Whisper model for ASR (Automatic Speech Recognition)
         st.write("Transcribing audio...")
