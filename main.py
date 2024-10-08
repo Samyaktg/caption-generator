@@ -44,30 +44,31 @@ if st.button("Start Processing"):
         st.write("Audio extracted.")
 
         # Step 3: Chunking audio if it's too large
-        st.write("Chunking audio into smaller parts...")
-        input_file = 'extracted_audio.mp3'
+        # st.write("Chunking audio into smaller parts...")
+        # input_file = 'extracted_audio.mp3'
 
-        # Stream over 30 seconds chunks rather than load the full file
-        stream = librosa.stream(
-            input_file,
-            block_length=30,
-            frame_length=16000,
-            hop_length=16000
-        )
+        # # Stream over 30 seconds chunks rather than load the full file
+        # stream = librosa.stream(
+        #     input_file,
+        #     block_length=30,
+        #     frame_length=16000,
+        #     hop_length=16000
+        # )
 
-        # Save the chunks as separate audio files
-        for i, speech in enumerate(stream):
-            sf.write(f'{i}.wav', speech, 44100)
+        # # Save the chunks as separate audio files
+        # for i, speech in enumerate(stream):
+        #     sf.write(f'{i}.wav', speech, 44100)
 
-        total_chunks = i + 1
-        st.write(f"Audio chunked into {total_chunks} parts.")
+        # total_chunks = i + 1
+        # st.write(f"Audio chunked into {total_chunks} parts.")
 
         # Step 4: Use Hugging Face Whisper model for ASR (Automatic Speech Recognition)
         st.write("Transcribing audio...")
         asr_model = pipeline(model="openai/whisper-base")
 
         # Transcribe each audio chunk
-        audio_paths = [f'{i}.wav' for i in range(total_chunks)]
+        #audio_paths = [f'{i}.wav' for i in range(total_chunks)]
+        audio_paths = "extracted_audio.mp3"
         transcriptions = []
 
         for audio_path in audio_paths:
