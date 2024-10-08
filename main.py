@@ -5,6 +5,19 @@ from transformers import pipeline
 from moviepy.editor import VideoFileClip
 from langchain_huggingface import HuggingFaceEndpoint
 import streamlit as st
+import subprocess
+
+try:
+    # Run the installation script
+    result = subprocess.run(['./install.sh'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Display the output and success message
+    st.success("Dependencies installed successfully!")
+    st.text(result.stdout.decode())
+except subprocess.CalledProcessError as e:
+    # Display the error message if the script fails
+    st.error("An error occurred during installation:")
+    st.text(e.stderr.decode())
 
 # Set Hugging Face API Token
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = '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'
