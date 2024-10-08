@@ -6,15 +6,7 @@ from moviepy.editor import VideoFileClip
 from langchain_huggingface import HuggingFaceEndpoint
 import streamlit as st
 import subprocess
-
-os.environ["FFMPEG_BINARY"] = "/usr/bin/ffmpeg"
-try:
-    # Run the installation script
-    result = subprocess.run(['./install.sh'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-    
-except subprocess.CalledProcessError as e:
-    print("welp")
+from pydub import AudioSegment
 
 # Set Hugging Face API Token
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = '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'
@@ -37,11 +29,12 @@ if st.button("Start Processing"):
 
         st.success('Video file uploaded successfully!')
 
-        # Step 2: Process video to extract audio
+        # Step 2: Process video to extract audio using pydub
         st.write("Processing video...")
-        video = VideoFileClip("uploaded_video.mp4")
-        audio = video.audio
-        audio.write_audiofile("extracted_audio.mp3")
+        
+        # Using AudioSegment to extract audio
+        audio = AudioSegment.from_file("uploaded_video.mp4")
+        audio.export("extracted_audio.mp3", format="mp3")
         st.write("Audio extracted.")
 
         # Step 3: Chunking audio if it's too large
