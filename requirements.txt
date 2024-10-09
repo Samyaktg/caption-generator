@@ -10,5 +10,5 @@ transformers
 langchain
 langchain_huggingface
 huggingface-hub
-python-ffmpeg
+ffmpeg-python
 audioread

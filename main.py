@@ -8,13 +8,16 @@ import streamlit as st
 from pydub import AudioSegment
 import subprocess
 
+import shutil
+
 def install_ffmpeg():
-    try:
-        subprocess.run(['ffmpeg', '-version'], check=True)
-    except subprocess.CalledProcessError:
+    if not shutil.which('ffmpeg'):
         # Install ffmpeg from a repository like apt-get
         subprocess.run(['apt-get', 'update'])
         subprocess.run(['apt-get', 'install', '-y', 'ffmpeg'])
+    else:
+        # If ffmpeg is already installed, this block will be executed
+        print("ffmpeg is already installed.")
 
 # Call the function to install ffmpeg
 install_ffmpeg()
