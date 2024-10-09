@@ -10,14 +10,17 @@ import subprocess
 
 import shutil
 
+import shutil
+import subprocess
+
 def install_ffmpeg():
-    if not shutil.which('ffmpeg'):
+    if not shutil.which('ffmpeg') or not shutil.which('ffprobe'):
         # Install ffmpeg from a repository like apt-get
         subprocess.run(['apt-get', 'update'])
         subprocess.run(['apt-get', 'install', '-y', 'ffmpeg'])
     else:
-        # If ffmpeg is already installed, this block will be executed
-        print("ffmpeg is already installed.")
+        # If ffmpeg and ffprobe are already installed, this block will be executed
+        print("ffmpeg and ffprobe are already installed.")
 
 # Call the function to install ffmpeg
 install_ffmpeg()
