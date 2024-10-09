@@ -49,6 +49,7 @@ if st.button("Start Processing"):
         st.write("Processing video...")
         
         # Using AudioSegment to extract audio
+        video = VideoFileClip("uploaded_video.mp4")
         audio = video.audio
         audio.write_audiofile("extracted_audio.mp3")
         st.write("Audio extracted.")
