@@ -80,7 +80,7 @@ if st.button("Start Processing"):
 
         # Transcribe each audio chunk
         #audio_paths = [f'{i}.wav' for i in range(total_chunks)]
-        audio_paths = 'extracted_audio.mp3'
+        audio_paths = ['extracted_audio.mp3']
         transcriptions = []
 
         for audio_path in audio_paths:
