@@ -49,9 +49,10 @@ if st.button("Start Processing"):
         st.write("Processing video...")
         
         # Using AudioSegment to extract audio
-        audio = AudioSegment.from_file("uploaded_video.mp4", format="mp4")
-        audio.export("extracted_audio.mp3", format="mp3")
+        audio = video.audio
+        audio.write_audiofile("extracted_audio.mp3")
         st.write("Audio extracted.")
+        
 
         # Step 3: Chunking audio if it's too large
         st.write("Chunking audio into smaller parts...")
