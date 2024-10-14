@@ -14,7 +14,8 @@ import shutil
 import subprocess
 
 # Set Hugging Face API Token
-os.environ["HUGGINGFACEHUB_API_TOKEN"] = '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'
+os.environ["HUGGINGFACEHUB_API_TOKEN"] = os.getenv('HUGGINGFACEHUB_API_TOKEN')
+
 
 # Streamlit app title
 st.title('Instagram Caption Generator from Video')
