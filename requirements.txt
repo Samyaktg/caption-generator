@@ -11,3 +11,4 @@ langchain
 langchain_huggingface
 huggingface-hub
 audioread
+accelerate
