@@ -105,7 +105,7 @@ if st.button("Start Processing", key="start_processing"):
 
         # Step 7: Generate Hashtags
         prompt = f"Generate 10 trending hashtags for the following Instagram post caption: '{caption}'."
-        llm = HuggingFaceEndpoint(endpoint_url="mistralai/Mistral-7B-Instruct-v0.2", token=os.environ["HUGGINGFACEHUB_API_TOKEN"])
+        llm = HuggingFaceEndpoint(endpoint_url="mistralai/Mistral-Large-Instruct-2407", token=os.environ["HUGGINGFACEHUB_API_TOKEN"])
         with st.spinner("Generating hashtags..."):
             hashtags = llm(prompt)
             st.write("Generated Hashtags: ", hashtags)
