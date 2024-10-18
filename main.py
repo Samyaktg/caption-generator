@@ -1,21 +1,14 @@
 import os
 import librosa
 import soundfile as sf
-from transformers import pipeline
+from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from moviepy.editor import VideoFileClip
-from langchain_huggingface import HuggingFaceEndpoint
 import streamlit as st
 from pydub import AudioSegment
-import subprocess
-
 import shutil
-
-import shutil
-import subprocess
 
 # Set Hugging Face API Token
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = st.secrets["general"]["HUGGINGFACEHUB_API_TOKEN"]
-
 
 # Streamlit app title
 st.title('Instagram Caption Generator from Video')
@@ -33,20 +26,18 @@ if st.button("Start Processing", key="start_processing"):
         # Save the uploaded file
         with open("uploaded_video.mp4", "wb") as f:
             f.write(video_file.getbuffer())
-
         st.success('Video file uploaded successfully!')
 
-        # Step 2: Process video to extract audio using pydub
+        # Step 2: Process video to extract audio using moviepy
         st.write("Processing video...")
         with st.spinner("Extracting audio..."):
             video = VideoFileClip("uploaded_video.mp4")
             audio = video.audio
             if audio is None:
-                st.error("Is the term 'video' too hard to understand???")
+                st.error("No audio found in the video!")
             else:
                 audio.write_audiofile("extracted_audio.mp3")
                 st.write("Audio extracted.")
-        
 
         # Step 3: Chunking audio if it's too large
         st.write("Chunking audio into smaller parts...")
@@ -74,7 +65,6 @@ if st.button("Start Processing", key="start_processing"):
 
             # Transcribe each audio chunk
             audio_paths = [f'{i}.wav' for i in range(total_chunks)]
-            
             transcriptions = []
 
             for audio_path in audio_paths:
@@ -85,29 +75,52 @@ if st.button("Start Processing", key="start_processing"):
             full_transcript = ' '.join(transcriptions)
             st.write("Transcription completed.")
 
-        # Step 6: Generate Instagram Caption
-        
+        # Step 6: Generate Instagram Caption using Llama 3.1-70B Instruct
+
         def generate_caption(input_text, context):
-            repo_id = "mistralai/Mistral-Large-Instruct-2407"
-            sec_key = os.environ["HUGGINGFACEHUB_API_TOKEN"]
-            llm = HuggingFaceEndpoint(endpoint_url=repo_id, max_length=128, temperature=0.7, token=sec_key)
+            model_id = "meta-llama/Meta-Llama-3.1-70B-Instruct"
 
-            # Creating a prompt template that uses both video transcription and user-provided context
-            template = """Based on the video transcription: '{input_text}' and the context: '{context}', generate an Instagram caption."""
-            prompt = template.format(input_text=input_text, context=context)
+            # Initialize model and tokenizer
+            model = AutoModelForCausalLM.from_pretrained(
+                model_id, device_map="auto", torch_dtype="bfloat16"
+            )
+            tokenizer = AutoTokenizer.from_pretrained(model_id)
 
-            return llm(prompt)
+            # Construct the input prompt
+            prompt = f"Based on the video transcription: '{input_text}' and the context: '{context}', generate an Instagram caption."
+
+            # Tokenize and generate output
+            input_ids = tokenizer(prompt, return_tensors="pt").input_ids.to("cuda")
+            outputs = model.generate(input_ids, max_new_tokens=128)
+
+            return tokenizer.decode(outputs[0], skip_special_tokens=True)
 
         # Generate Instagram Caption
         with st.spinner("Generating caption..."):
             caption = generate_caption(full_transcript, context)
             st.write("Generated Caption: ", caption)
 
-        # Step 7: Generate Hashtags
-        prompt = f"Generate 10 trending hashtags for the following Instagram post caption: '{caption}'."
-        llm = HuggingFaceEndpoint(endpoint_url="mistralai/Mistral-Large-Instruct-2407", token=os.environ["HUGGINGFACEHUB_API_TOKEN"])
+        # Step 7: Generate Hashtags using the same model
+
+        def generate_hashtags(caption):
+            model_id = "meta-llama/Meta-Llama-3.1-70B-Instruct"
+
+            # Initialize model and tokenizer (reuse the same instance if needed)
+            model = AutoModelForCausalLM.from_pretrained(
+                model_id, device_map="auto", torch_dtype="bfloat16"
+            )
+            tokenizer = AutoTokenizer.from_pretrained(model_id)
+
+            # Construct the prompt for generating hashtags
+            prompt = f"Generate 10 trending hashtags for the following Instagram post caption: '{caption}'."
+
+            input_ids = tokenizer(prompt, return_tensors="pt").input_ids.to("cuda")
+            outputs = model.generate(input_ids, max_new_tokens=50)
+
+            return tokenizer.decode(outputs[0], skip_special_tokens=True)
+
         with st.spinner("Generating hashtags..."):
-            hashtags = llm(prompt)
+            hashtags = generate_hashtags(caption)
             st.write("Generated Hashtags: ", hashtags)
 
         # Cleanup: Delete video and audio files
@@ -116,6 +129,6 @@ if st.button("Start Processing", key="start_processing"):
         for audio_path in audio_paths:
             os.remove(audio_path)
 
-        st.success("Thanks for using this program, more updates coming soon!")
+        st.success("Thanks for using this program!")
     else:
-        st.warning("Provide some context and upload the video you MORON")
+        st.warning("Please upload a video and provide context!")
