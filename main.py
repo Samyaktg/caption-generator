@@ -78,7 +78,7 @@ if st.button("Start Processing", key="start_processing"):
         # Step 6: Generate Instagram Caption using Llama 3.1-70B Instruct
 
         def generate_caption(input_text, context):
-            model_id = "meta-llama/Meta-Llama-3.1-70B-Instruct"
+            model_id = "nvidia/Llama-3.1-Nemotron-70B-Instruct-HF"
 
             # Initialize model and tokenizer
             model = AutoModelForCausalLM.from_pretrained(
@@ -103,7 +103,7 @@ if st.button("Start Processing", key="start_processing"):
         # Step 7: Generate Hashtags using the same model
 
         def generate_hashtags(caption):
-            model_id = "meta-llama/Meta-Llama-3.1-70B-Instruct"
+            model_id = "nvidia/Llama-3.1-Nemotron-70B-Instruct-HF"
 
             # Initialize model and tokenizer (reuse the same instance if needed)
             model = AutoModelForCausalLM.from_pretrained(
