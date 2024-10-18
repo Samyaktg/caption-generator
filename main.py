@@ -88,7 +88,7 @@ if st.button("Start Processing", key="start_processing"):
         # Step 6: Generate Instagram Caption
         
         def generate_caption(input_text, context):
-            repo_id = "nvidia/Llama-3.1-Nemotron-70B-Instruct-HF"
+            repo_id = "mistralai/Mistral-Large-Instruct-2407"
             sec_key = os.environ["HUGGINGFACEHUB_API_TOKEN"]
             llm = HuggingFaceEndpoint(endpoint_url=repo_id, max_length=128, temperature=0.7, token=sec_key)
 
