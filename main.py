@@ -14,7 +14,7 @@ import shutil
 import subprocess
 
 # Set Hugging Face API Token
-os.environ["HUGGINGFACEHUB_API_TOKEN"] = os.getenv('HUGGINGFACEHUB_API_TOKEN')
+os.environ["HUGGINGFACEHUB_API_TOKEN"] = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 
 
 # Streamlit app title
